@@ -45,3 +45,22 @@ def test_substrate_adapter_protocol_is_runtime_checkable():
     assert callable(getattr(d, "teardown"))
     # Import path reachable
     assert SubstrateAdapter is not None
+
+
+def test_esnn_adapter_executes_all_four_handlers(tmp_path):
+    from kiki_oniric.substrates.factory import ESNNAdapter
+
+    adapter = ESNNAdapter()
+    request = CellRequest(
+        substrate="esnn_thalamocortical",
+        profile="p_equ",
+        seed=3,
+        scale="qwen3p5-1p5b",
+        model_path=tmp_path,
+    )
+    result = adapter.execute_profile(request)
+    for key in ("replay_rate", "downscale_norm", "restructure_sum",
+                "recombine_rate", "delta_acc", "wall_time_s"):
+        assert key in result, f"missing key {key}"
+    assert isinstance(result["delta_acc"], float)
+    adapter.teardown()
