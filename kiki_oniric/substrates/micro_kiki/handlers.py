@@ -1,15 +1,15 @@
 """Handler factories for the micro_kiki substrate.
 
 Extracted from monolithic ``micro_kiki.py`` (1188 LOC) by N5 Task
-4 (2026-05-10). Tasks 5-7 will extract OPLoRA, TIES-Merge, and
-the safetensors loaders. Until those tasks land, the helpers
-``_oplora_projector`` and ``_ties_merge`` plus the state
-dataclasses still live in :mod:`._legacy` and are imported here.
+4 (2026-05-10). Tasks 5-7 then extracted OPLoRA (:mod:`.oplora`),
+TIES-Merge (:mod:`.ties`), and the safetensors loaders +
+env-var gating (:mod:`.loaders`). The substrate class itself now
+lives in :mod:`.substrate` (renamed from ``_legacy.py`` by Task 7).
 
 The factories are bundled as a mixin so they continue to read
 ``self._restructure_state`` / ``self._recombine_state`` without
-plumbing changes ; ``MicroKikiSubstrate`` (still in
-``_legacy.py``) inherits from :class:`MicroKikiHandlersMixin`.
+plumbing changes ; :class:`MicroKikiSubstrate` (in
+:mod:`.substrate`) inherits from :class:`MicroKikiHandlersMixin`.
 The 4 method names (``replay_handler_factory``,
 ``downscale_handler_factory``, ``restructure_handler_factory``,
 ``recombine_handler_factory``) are part of the DR-3 Conformance
@@ -30,9 +30,9 @@ class MicroKikiHandlersMixin:
     instance attributes ``_restructure_state`` (a
     ``MicroKikiRestructureState``) and ``_recombine_state`` (a
     ``MicroKikiRecombineState``). Helper math (``_oplora_projector``,
-    ``_ties_merge``) lives in :mod:`._legacy` for now and is
-    imported lazily inside the factories so this module stays
-    free of legacy-state cycles.
+    ``_ties_merge``) lives in :mod:`.oplora` and :mod:`.ties` and is
+    imported lazily inside the factories so this module stays free
+    of cross-module import cycles.
     """
 
     # ----- Protocol-contract factories (mirror esnn_* substrates) -----
@@ -139,8 +139,8 @@ class MicroKikiHandlersMixin:
         this numpy port lives substrate-side for the dream
         runtime's no-torch constraint.
         """
-        # Imported lazily to avoid an import cycle. Promoted from
-        # :mod:`._legacy` to :mod:`.oplora` by N5 Task 5.
+        # Imported lazily to avoid an import cycle.
+        # Lives in :mod:`.oplora` since N5 Task 5.
         from kiki_oniric.substrates.micro_kiki.oplora import (
             _oplora_projector,
         )

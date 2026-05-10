@@ -5,21 +5,28 @@ Split from monolithic ``micro_kiki.py`` (1188 LOC) by N5 Tasks
 existing call sites
 ``from kiki_oniric.substrates.micro_kiki import X`` keep working.
 
-Task 4 (2026-05-10) — extracted the 4 op-handler factories into
-:mod:`.handlers` (as a mixin so ``MicroKikiSubstrate`` still
-exposes them as methods, per the DR-3 Conformance Criterion
-contract).
-
-Task 5 (2026-05-10) — extracted the OPLoRA projector helper into
-:mod:`.oplora`. Tasks 6-7 will peel TIES-Merge and the safetensors
-loaders out of :mod:`._legacy` ; until then those helpers + the
-substrate class stay in the holding file and are re-exported here.
+- Task 4 (2026-05-10) — :mod:`.handlers` (4 op-handler factories
+  as a mixin so ``MicroKikiSubstrate`` still exposes them as
+  methods, per the DR-3 Conformance Criterion contract).
+- Task 5 (2026-05-10) — :mod:`.oplora` (OPLoRA projector helper).
+- Task 6 (2026-05-10) — :mod:`.ties` (TIES-Merge recombine).
+- Task 7 (2026-05-10) — :mod:`.loaders` (safetensors + env-var
+  gating) and :mod:`.substrate` (the substrate class itself,
+  renamed from ``_legacy.py``).
 """
 from __future__ import annotations
 
+# Loaders + env gating (Task 7 — :mod:`.loaders`).
+from kiki_oniric.substrates.micro_kiki.loaders import (  # noqa: F401
+    _REAL_BACKEND_ENV_VAR,
+    _REAL_BACKEND_PATH_ENV_VAR,
+    _real_backend_enabled,
+    _real_backend_path_from_env,
+    _try_load_safetensors,
+)
+
 # OPLoRA projector (Task 5 — :mod:`.oplora`) and TIES-Merge
-# (Task 6 — :mod:`.ties`). Imported BEFORE :mod:`._legacy` so
-# the explicit bindings win over the legacy back-compat re-exports.
+# (Task 6 — :mod:`.ties`).
 from kiki_oniric.substrates.micro_kiki.oplora import (  # noqa: F401
     _oplora_projector,
 )
@@ -27,22 +34,18 @@ from kiki_oniric.substrates.micro_kiki.ties import (  # noqa: F401
     _ties_merge,
 )
 
-# Constants + helpers (still in :mod:`._legacy` until Task 7)
-from kiki_oniric.substrates.micro_kiki._legacy import (  # noqa: F401
+# Substrate class + DR-0 state dataclasses + components map
+# (Task 7 — :mod:`.substrate`, renamed from ``_legacy.py``).
+from kiki_oniric.substrates.micro_kiki.substrate import (  # noqa: F401
     MICRO_KIKI_SUBSTRATE_NAME,
     MICRO_KIKI_SUBSTRATE_VERSION,
     MicroKikiRecombineState,
     MicroKikiRestructureState,
     MicroKikiSubstrate,
-    _REAL_BACKEND_ENV_VAR,
-    _REAL_BACKEND_PATH_ENV_VAR,
-    _real_backend_enabled,
-    _real_backend_path_from_env,
-    _try_load_safetensors,
     micro_kiki_substrate_components,
 )
 
-# Handler factories (Task 4 — :mod:`.handlers`)
+# Handler factories (Task 4 — :mod:`.handlers`).
 from kiki_oniric.substrates.micro_kiki.handlers import (  # noqa: F401
     MicroKikiHandlersMixin,
 )

@@ -1,4 +1,12 @@
-"""micro-kiki substrate — Qwen MoE + LoRA (cycle-3 Phase 2, draft).
+"""micro-kiki substrate class — Qwen MoE + LoRA (cycle-3 Phase 2).
+
+Renamed from ``_legacy.py`` by N5 Task 7 (2026-05-10), the final
+task of the M2 audit split. Now the canonical home of
+:class:`MicroKikiSubstrate` + the two DR-0 state dataclasses
+(``MicroKikiRestructureState`` / ``MicroKikiRecombineState``) and
+``micro_kiki_substrate_components``. Loaders + env gating live in
+:mod:`.loaders`, handlers in :mod:`.handlers`, OPLoRA / TIES in
+:mod:`.oplora` / :mod:`.ties`.
 
 Third substrate for dreamOfkiki, wrapping the micro-kiki project's
 adapter-training output. The intended production base is
@@ -41,10 +49,9 @@ from __future__ import annotations
 
 import json
 import logging
-import os
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 import numpy as np
 from numpy.typing import NDArray
@@ -63,51 +70,21 @@ MICRO_KIKI_SUBSTRATE_NAME = "micro_kiki"
 MICRO_KIKI_SUBSTRATE_VERSION = "C-v0.9.1+PARTIAL"
 
 
-# Env flag gating the real SpikingKiki-35B-A3B-V4 backend. Default
-# OFF — on CI (Linux, no SpikingKiki artifact, no mlx_lm) the
-# substrate runs in pure-stub mode. On Mac Studio with the
-# artifact cloned and ``DREAM_MICRO_KIKI_REAL=1`` exported,
-# :meth:`load` reads ``lif_metadata.json`` + 3 sample ``.npz``
-# modules to populate a minimal real-state dict that
-# :meth:`awake` subsequently rate-codes.
-_REAL_BACKEND_ENV_VAR = "DREAM_MICRO_KIKI_REAL"
-
-# Companion env var for :data:`_REAL_BACKEND_ENV_VAR`. When set, its
-# value is used as the default ``real_backend_path`` for any
-# :class:`MicroKikiSubstrate` constructed without an explicit
-# ``real_backend_path`` keyword. Lets callers wire the real backend
-# purely through environment (shell / launch script) without having
-# to edit Python. Explicit constructor arg wins when both are set
-# (standard precedence).
-_REAL_BACKEND_PATH_ENV_VAR = "DREAM_MICRO_KIKI_REAL_BACKEND_PATH"
-
-
-def _real_backend_enabled() -> bool:
-    """Return True when the real-backend env flag is set truthy.
-
-    Accepts ``1``, ``true``, ``yes``, ``on`` (case-insensitive).
-    Separated as a helper so tests can monkeypatch
-    ``os.environ`` without touching a frozen constant.
-    """
-    raw = os.environ.get(_REAL_BACKEND_ENV_VAR, "").strip().lower()
-    return raw in {"1", "true", "yes", "on"}
-
-
-def _real_backend_path_from_env() -> str | None:
-    """Return the ``real_backend_path`` value from env, or ``None``.
-
-    Callers use this as a default in ``__post_init__`` so the
-    substrate picks up a Studio-local artifact path without
-    needing Python-side wiring. Empty / unset env returns
-    ``None`` (stub mode).
-    """
-    raw = os.environ.get(_REAL_BACKEND_PATH_ENV_VAR, "").strip()
-    return raw or None
+# Env-var gating + safetensors loader extracted to :mod:`.loaders`
+# by N5 Task 7 (2026-05-10). Re-exported below for back-compat.
+from kiki_oniric.substrates.micro_kiki.loaders import (  # noqa: E402, F401
+    _REAL_BACKEND_ENV_VAR,
+    _REAL_BACKEND_PATH_ENV_VAR,
+    _real_backend_enabled,
+    _real_backend_path_from_env,
+    _try_load_safetensors,
+)
 
 
 # OPLoRA projector helper extracted to :mod:`.oplora` (N5 Task 5,
-# 2026-05-10). Re-exported below for back-compat.
-from kiki_oniric.substrates.micro_kiki.oplora import (  # noqa: E402
+# 2026-05-10). Re-exported via the package ``__init__`` ; not used
+# directly inside this module since handlers.py imports it lazily.
+from kiki_oniric.substrates.micro_kiki.oplora import (  # noqa: E402, F401
     _oplora_projector,
 )
 
@@ -181,47 +158,7 @@ except ImportError:  # pragma: no cover - branch depends on env
     _MLX_LM_AVAILABLE = False
 
 
-def _try_load_safetensors(
-    adapter_path: str | Path,
-) -> dict[str, NDArray] | None:
-    """Best-effort load of a LoRA ``.safetensors`` via numpy.
-
-    Returns ``None`` when :mod:`safetensors` is missing or the
-    path does not resolve. The successful path uses
-    ``safetensors.numpy.load_file`` so the returned tensors are
-    plain :class:`numpy.ndarray` — the dream runtime is numpy-
-    only, so we never need a torch/mlx round-trip here.
-
-    Accepts either a direct file path or a directory containing
-    ``adapters.safetensors`` (matches the layout produced by
-    ``mlx_lm lora --adapter-path <dir>``).
-    """
-    try:
-        # Lazy import — safetensors is a light wheel but still
-        # opt-in so the module stays importable on bare-bones CI.
-        from safetensors.numpy import load_file  # type: ignore[import-not-found]
-    except ImportError:
-        return None
-
-    path = Path(adapter_path)
-    if path.is_dir():
-        candidate = path / "adapters.safetensors"
-        if not candidate.is_file():
-            return None
-        path = candidate
-    if not path.is_file():
-        return None
-    try:
-        return load_file(str(path))
-    except Exception as exc:  # noqa: BLE001 — ingestion guard
-        _LOG.warning(
-            "safetensors load failed for %s (%s) ; returning None",
-            path, exc,
-        )
-        return None
-
-
-from kiki_oniric.substrates.micro_kiki.handlers import (
+from kiki_oniric.substrates.micro_kiki.handlers import (  # noqa: E402
     MicroKikiHandlersMixin,
 )
 
