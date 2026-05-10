@@ -44,3 +44,20 @@ Measured via `coverage run --source=kiki_oniric/substrates/micro_kiki --branch -
 4. **loaders.py → 60%**: env-gated; needs either a Studio CI runner or
    fixture-based mocks of the real-backend artefact loader.
 5. **oplora.py / ties.py / `__init__.py`**: already at 100%. Maintenance only.
+
+## Note: loaders.py 39% is the legitimate env-gated floor
+
+The `loaders.py` module's missing-coverage block (lines 89-111) is
+exclusively the `DREAM_MICRO_KIKI_REAL=1` env-gated real-backend
+loader. Exercising those lines requires Studio access (or
+significant fixture mocking) — not reachable from CI / dev macOS.
+
+The 60% target above was aspirational. Acknowledged: 39% is the
+realistic ceiling without backend mock infrastructure. Raising
+it requires either (a) a `[real-backend]` extras + mocks, or
+(b) running tests against real Studio M3 Ultra (out of scope
+for routine CI).
+
+micro_kiki **package-level coverage 86%** remains the canonical
+metric for downstream consumers; loaders.py contribution is
+weighted accordingly.
