@@ -3,36 +3,13 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
-
 from experiments.g4_quater_test.run_step2_restructure_sweep import (
     ARMS,
     RESTRUCTURE_FACTORS,
     run_pilot,
 )
 
-# H3 fix (N2 plan, 2026-05-10): the FMNIST data directory is gitignored
-# (raw IDX files; not committed). Convert "data missing" from a hard
-# failure into a clean skip so a fresh clone reports green by default
-# and surfaces this as a "data prerequisite" rather than a code bug.
-_FMNIST_DATA = (
-    Path(__file__).resolve().parents[3]
-    / "experiments"
-    / "g4_split_fmnist"
-    / "data"
-)
-_SKIP_IF_NO_FMNIST = pytest.mark.skipif(
-    not _FMNIST_DATA.exists(),
-    reason=(
-        f"FMNIST raw IDX files not present at {_FMNIST_DATA}; "
-        "download the 4 Fashion-MNIST IDX files (train/test, "
-        "images/labels) from "
-        "https://github.com/zalandoresearch/fashion-mnist/tree/master/data/fashion "
-        "into that directory before running this pilot. "
-        "The loader at experiments/g4_split_fmnist/dataset.py "
-        "expects the standard IDX layout."
-    ),
-)
+from .conftest import FMNIST_DATA, skip_if_no_fmnist
 
 
 def test_constants_match_prereg() -> None:
@@ -40,9 +17,9 @@ def test_constants_match_prereg() -> None:
     assert RESTRUCTURE_FACTORS == (0.85, 0.95, 0.99)
 
 
-@_SKIP_IF_NO_FMNIST
+@skip_if_no_fmnist
 def test_run_pilot_smoke(tmp_path: Path) -> None:
-    data_dir = _FMNIST_DATA
+    data_dir = FMNIST_DATA
     out_json = tmp_path / "step2.json"
     out_md = tmp_path / "step2.md"
     registry_db = tmp_path / "registry.sqlite"
