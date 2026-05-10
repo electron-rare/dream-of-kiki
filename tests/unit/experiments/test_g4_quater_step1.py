@@ -24,9 +24,13 @@ _FMNIST_DATA = (
 _SKIP_IF_NO_FMNIST = pytest.mark.skipif(
     not _FMNIST_DATA.exists(),
     reason=(
-        f"FMNIST raw data not present at {_FMNIST_DATA}; "
-        "fetch via experiments/g4_split_fmnist/fetch_data.sh "
-        "(or equivalent in that experiment dir) before running this pilot."
+        f"FMNIST raw IDX files not present at {_FMNIST_DATA}; "
+        "download the 4 Fashion-MNIST IDX files (train/test, "
+        "images/labels) from "
+        "https://github.com/zalandoresearch/fashion-mnist/tree/master/data/fashion "
+        "into that directory before running this pilot. "
+        "The loader at experiments/g4_split_fmnist/dataset.py "
+        "expects the standard IDX layout."
     ),
 )
 
