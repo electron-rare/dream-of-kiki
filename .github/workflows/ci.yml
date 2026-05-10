@@ -30,5 +30,9 @@ jobs:
       - name: Run tests with coverage
         run: uv run pytest --cov-fail-under=90
 
+      - name: Validate STATUS.md doc-truth (N4 Task 5)
+        continue-on-error: true
+        run: uv run python scripts/check_status_truth.py
+
       - name: Invariant smoke tests (placeholder)
         run: echo "S5+: conformance/invariant tests will run here"
