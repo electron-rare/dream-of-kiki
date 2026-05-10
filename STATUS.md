@@ -57,12 +57,24 @@ caller-enforceable. Multi-artifact support landed (issue #2) :
 schema keyed on `(run_id, artifact_name)`, idempotent migration
 from the v1 single-hash layout, plus `list_output_hashes(run_id)`.
 
-R1 reproducibility status (audited 2026-05-10): all 5 entries in
-`tests/reproducibility/golden_hashes.json` still flagged
+R1 reproducibility status (audited 2026-05-10, rebaselined
+2026-05-10 N2 Task 3): all 5 entries in
+`tests/reproducibility/golden_hashes.json` remain
 `"status": "pending_review"`. The previously-claimed promotion to
 `validated_cross_machine_2026-05-04` was a STATUS narrative that
-never propagated into the JSON — corrected here. Cross-machine
-validation remains pending.
+never propagated into the JSON — corrected. Triage of the
+post-Task 2 dirty diff confirmed deterministic drift (consecutive
+runs stable; only the `commit` metadata field updates), traced
+to runtime-environment evolution (mlx / native wheels) rather
+than any source or `uv.lock` change in this repo. 3 hash values
+were rebaselined (`test_r1_full_pipeline`, `test_r1_recombine`,
+`test_r1_replay`); 2 entries refreshed `commit` metadata only
+(`test_r1_downscale`, `test_r1_restructure`). See
+`tests/reproducibility/REBASELINE_NOTE.md` for the per-entry
+old → new diff, the verification recipe, and the follow-up
+hardening plan (tighter `mlx` / `numpy` pinning before any
+promotion to `accepted`). Cross-machine validation remains
+pending.
 
 **2026-04-21 DualVer bump (FC-PATCH)**: DR-2 weakened with precondition excluding RESTRUCTURE-before-REPLAY permutations. See CHANGELOG `[C-v0.7.1+PARTIAL]` and amendment doc.
 
