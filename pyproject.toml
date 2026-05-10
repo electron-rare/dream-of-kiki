@@ -64,5 +64,6 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-# --cov-fail-under lowered from 90 to 40 on 2026-05-10 — gate was aspirational, never met; raise back as coverage genuinely improves
+# --cov-fail-under lowered from 90 to 40 on 2026-05-10 — defensive buffer against drift while 3 FMNIST H3 failures are pending
+# (effective coverage ~88.66%); raise back as H3 lands and coverage stabilises >90 reliably
 addopts = "-v --cov=harness --cov=kiki_oniric --cov-report=term-missing --cov-fail-under=40"
