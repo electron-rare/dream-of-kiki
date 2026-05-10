@@ -69,6 +69,7 @@ Fallback : sub-agent `critic` + `validator` (always available).
 | TBD | Milewski sent | TODO W17 Mon | from Apple Mail |
 | TBD | Dumas sent | TODO W17 Mon | from Apple Mail |
 | TBD | Bardes sent | TODO W17 Mon | from Apple Mail |
+| 2026-05-10 | Status audit — none of W17 sends executed (3-week slip) | NOTED | Refreshed mail drafts at `~/Documents/Business electron rare/dr2-recruitment-2026-05-10/{mail-milewski.eml, mail-dumas-reviewer.eml, mail-bardes-vjepa.eml}`. Drafts integrate the post-W17 progress: (1) DR-2 weakening Option B adopted 2026-04-21 = empirically falsified-then-weakened (12/24 permutations fall in RESTRUCTURE-before-REPLAY class), (2) Paper 1 v0.2 PLOS CB pivot codified `cycle3-plan-adaptation-2026-04-20.md`, (3) Paper 1 v0.2 PDF rendered (22 pp `docs/papers/paper1/build/full-draft.pdf`), (4) `paper-1-v0.2-arxiv` tag exists on remote, (5) `bouba_sens v0.5.9` + `nerve-wml v1.8.1` Zenodo-archived 2026-05-10 (visibility boost), (6) RecursiveMAS arXiv:2604.25917 positioning. Recommended send order (parallel-able): Milewski (TCS, target DR-2 closure proof) ; Dumas (FR priority-1, highest response prob) ; Bardes (V-JEPA, lower-priority but parallel-able). Path correction: prior tracker referenced `Business OS/` which never existed locally; canonical path is `Business electron rare/`. |
 
 ## Paper-1 framing based on reviewer returns
 
