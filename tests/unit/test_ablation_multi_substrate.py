@@ -12,7 +12,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pandas as pd
 import pytest
 
 from harness.benchmarks.retained.retained import RetainedBenchmark

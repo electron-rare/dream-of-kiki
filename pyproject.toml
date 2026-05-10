@@ -54,6 +54,16 @@ packages = ["harness", "kiki_oniric"]
 line-length = 100
 target-version = "py312"
 
+[tool.ruff.lint.per-file-ignores]
+# Scripts and experiments use sys.path manipulation before imports (E402)
+# and ad-hoc style for prototype runners (E701/E702/F841).
+"scripts/*" = ["E402"]
+"experiments/*" = ["E402", "E701", "E702", "F841"]
+"docs/milestones/*" = ["E402", "E701", "E702", "F841"]
+# Tests use pytest.importorskip before module imports (E402); also tolerate
+# locally-bound diagnostics in test scaffolding (F841).
+"tests/*" = ["E402", "F841"]
+
 [tool.mypy]
 strict = true
 python_version = "3.12"

@@ -21,7 +21,6 @@ cycle-3 discipline.
 from __future__ import annotations
 
 import hashlib
-import struct
 from unittest.mock import patch
 
 import mlx.core as mx
@@ -29,7 +28,6 @@ import numpy as np
 import pytest
 
 from harness.real_models.base_model_registry import (
-    BaseModelPin,
     REGISTRY,
     get_pin,
 )

@@ -62,8 +62,8 @@ def test_dr4_ops_inclusion_p_equ_subset_p_max() -> None:
     p_max = _p_max_metadata()
     ops_equ = registered_ops("P_equ")
     assert ops_equ <= p_max.target_ops, (
-        f"DR-4 violated: ops(P_equ) not subset of "
-        f"target_ops(P_max)"
+        "DR-4 violated: ops(P_equ) not subset of "
+        "target_ops(P_max)"
     )
 
 

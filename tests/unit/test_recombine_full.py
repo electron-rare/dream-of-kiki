@@ -14,7 +14,6 @@ from kiki_oniric.dream.episode import (
     OutputChannel,
 )
 from kiki_oniric.dream.operations.recombine import (
-    RecombineFullResult,
     RecombineOpState,
     recombine_handler_full_mlx,
 )

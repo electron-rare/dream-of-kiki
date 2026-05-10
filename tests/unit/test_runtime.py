@@ -10,7 +10,7 @@ from kiki_oniric.dream.episode import (
     Operation,
     OutputChannel,
 )
-from kiki_oniric.dream.runtime import DreamRuntime, EpisodeLogEntry
+from kiki_oniric.dream.runtime import DreamRuntime
 
 
 def make_episode(ep_id: str, ops: tuple[Operation, ...]) -> DreamEpisode:
