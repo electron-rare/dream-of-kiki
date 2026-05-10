@@ -139,10 +139,9 @@ class MicroKikiHandlersMixin:
         this numpy port lives substrate-side for the dream
         runtime's no-torch constraint.
         """
-        # Imported lazily to avoid an import cycle while the legacy
-        # holding module still owns the helper. Tasks 5-7 will
-        # promote this to a package-level top import.
-        from kiki_oniric.substrates.micro_kiki._legacy import (
+        # Imported lazily to avoid an import cycle. Promoted from
+        # :mod:`._legacy` to :mod:`.oplora` by N5 Task 5.
+        from kiki_oniric.substrates.micro_kiki.oplora import (
             _oplora_projector,
         )
 

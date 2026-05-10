@@ -10,14 +10,21 @@ Task 4 (2026-05-10) — extracted the 4 op-handler factories into
 exposes them as methods, per the DR-3 Conformance Criterion
 contract).
 
-Tasks 5-7 will further peel OPLoRA, TIES-Merge, and the
-safetensors loaders out of :mod:`._legacy` ; until then those
-helpers + the substrate class stay in the holding file and are
-re-exported here.
+Task 5 (2026-05-10) — extracted the OPLoRA projector helper into
+:mod:`.oplora`. Tasks 6-7 will peel TIES-Merge and the safetensors
+loaders out of :mod:`._legacy` ; until then those helpers + the
+substrate class stay in the holding file and are re-exported here.
 """
 from __future__ import annotations
 
-# Constants + helpers (still in :mod:`._legacy` until Tasks 5-7)
+# OPLoRA projector (Task 5 — :mod:`.oplora`). Imported BEFORE
+# :mod:`._legacy` so the explicit binding wins over the legacy
+# back-compat re-export.
+from kiki_oniric.substrates.micro_kiki.oplora import (  # noqa: F401
+    _oplora_projector,
+)
+
+# Constants + helpers (still in :mod:`._legacy` until Tasks 6-7)
 from kiki_oniric.substrates.micro_kiki._legacy import (  # noqa: F401
     MICRO_KIKI_SUBSTRATE_NAME,
     MICRO_KIKI_SUBSTRATE_VERSION,
@@ -26,7 +33,6 @@ from kiki_oniric.substrates.micro_kiki._legacy import (  # noqa: F401
     MicroKikiSubstrate,
     _REAL_BACKEND_ENV_VAR,
     _REAL_BACKEND_PATH_ENV_VAR,
-    _oplora_projector,
     _real_backend_enabled,
     _real_backend_path_from_env,
     _ties_merge,
