@@ -153,6 +153,8 @@ L'ensemble des operations forme un semi-groupe libre non commutatif sous la comp
 - **K3** latence de swap bornee (WARN)
 - **K4** couverture de matrice d'evaluation sur bump MAJOR (BLOCKING)
 
+La suffisance empirique de ces invariants est examinee en §5.7.
+
 ### 4.7 Versionnement DualVer, axe formel et axe empirique
 
 `C-vX.Y.Z+{STABLE,UNSTABLE}` - les axes formel (FC) et empirique (EC) evoluent independamment. Etat courant : `C-v0.5.0+STABLE` (cible post-G3 : `C-v0.7.0+STABLE`).
@@ -185,7 +187,17 @@ Voir Paper 2 pour l'instanciation empirique (implementation de reference MLX du 
 
 ### 5.6 Esquisses de preuve - DR-0..DR-4
 
-DR-0 est prouve par l'invariant du registre de handlers avec `try/finally` ; DR-1 par la comptabilisation de vidage du buffer beta ; DR-2 dans `docs/proofs/dr2-compositionality.md` ; DR-3 par le Conformance Criterion (signature typing + tests d'axiomes + invariants BLOCKING applicables) ; DR-4 dans `docs/proofs/dr4-profile-inclusion.md` (inclusion en chaine des operations et des canaux).
+DR-0 est prouve par l'invariant du registre de handlers avec `try/finally` ; DR-1 par la comptabilisation de vidage du buffer beta ; DR-2 dans `docs/proofs/dr2-compositionality.md` ; DR-3 par le Conformance Criterion (signature typing + tests d'axiomes + invariants BLOCKING applicables) ; DR-4 dans `docs/proofs/dr4-profile-inclusion.md` (inclusion en chaine des operations et des canaux). Ces preuves etablissent la satisfaction des axiomes par les substrats de reference ; la question complementaire de savoir si le critere peut etre satisfait par accident est traitee en §5.7.
+
+### 5.7 Tests negatifs - necessite des tests de propriete d'axiomes C2
+
+Les sections 5.1-5.6 etablissent les piliers structurels du Conformance Criterion (compilation deterministe, scheduler mono-thread, swap atomique avec gardes d'invariants, inclusion en chaine des profils). Une question complementaire est de savoir si ces piliers structurels sont *suffisants* pour distinguer un substrat authentique d'une construction qui les satisferait par accident. Nous avons traite cette question via un audit de tests negatifs pre-enregistre (style OSF ; pre-enregistrement dans `docs/milestones/q2-conformance-negative-2026-05-10.md`).
+
+Nous avons construit 15 substrats adversariaux en trois categories : accidents triviaux (Identity, RandomNoise, Lookup, FrozenZeros, Constant) ; accidents par construction adversariale (ShapePreservingNoise, BudgetGaming, PermutedReplay, OverloadRecombine, StatelessAccident, CommutativityViolator, BoundaryCheater) ; accidents statistiques evalues a *N*=100 essais chacun (RandomCoinFlip, ShapeDistributionDependent, SeedDependentSubstrate). Chaque substrat implemente le Protocol `SubstrateAdapter` mais est concu pour violer au moins un axiome ou un invariant dans son esprit.
+
+En appliquant la couche d'invariants structurels du critere seule (finitude S2 ; bornes sur `replay_rate` et `recombine_rate` calquees sur S4 ; non-negativite de `restructure_sum` et `wall_time_s` ; `delta_acc` borne), nous observons des taux de passage non nuls sur **les 15 substrats** (Cat A et Cat B a 1/1 essai chacun ; Cat C a 6/100, 80/100 et 1/100 respectivement). Selon la regle de decision pre-enregistree (≥3 faux positifs ⇒ reformulation), ce resultat etablit que **la couche structurelle est necessaire mais non suffisante** : le Conformance Criterion doit en outre exiger **des tests de propriete d'axiomes specifiques au substrat (C2)**, comme illustre pour le substrat E-SNN dans Paper 1 (cf. version EN §5.6). Un substrat arbitraire ne satisfaisant que la couche structurelle n'est pas, par sa seule force, conforme.
+
+Ce resultat renforce le critere plutot qu'il ne l'affaiblit : il rend explicite une exigence implicite. Artefacts de reproduction : `tests/conformance/adversarial/test_negative_substrates.py` et `scripts/run_q2_conformance_audit.py` ; sortie brute de l'audit : `docs/milestones/q2-conformance-negative-results.json`.
 
 ---
 

@@ -396,6 +396,8 @@ finding 12 non-commutative cross-pairs.
 - **K3** swap latency bounded (WARN)
 - **K4** eval matrix coverage on MAJOR bump (BLOCKING)
 
+The empirical sufficiency of these invariants is examined in §5.8.
+
 ### 4.7 DualVer formal+empirical versioning
 
 `C-vX.Y.Z+{STABLE,UNSTABLE}` — formal axis (FC) and empirical
@@ -512,7 +514,54 @@ generated-semigroup theorem (full proof in
 executable Conformance Criterion on two substrates (§5.6) ;
 DR-4 proved in `docs/proofs/dr4-profile-inclusion.md` as chain
 inclusion of ops and channels plus the DR-4.L monotonicity
-lemma.
+lemma. These proofs establish satisfaction of the axioms by the
+reference substrates ; the complementary question of whether the
+criterion can be satisfied by accident is addressed in §5.8.
+
+### 5.8 Negative tests — necessity of C2 axiom property tests
+
+Sections 5.1-5.7 establish the four structural pillars of the
+Conformance Criterion (deterministic compilation, single-threaded
+scheduler, atomic swap with invariant guards, profile chain
+inclusion) and present positive walkthroughs across two substrates.
+A complementary question is whether these structural pillars are
+*sufficient* to discriminate genuine substrates from constructions
+that satisfy them by accident. We addressed this with a
+pre-registered negative-test audit (OSF-style ; pre-registration in
+`docs/milestones/q2-conformance-negative-2026-05-10.md`).
+
+We constructed 15 adversarial substrates in three categories :
+trivial accidents (Identity, RandomNoise, Lookup, FrozenZeros,
+Constant) ; adversarial-construction accidents
+(ShapePreservingNoise, BudgetGaming, PermutedReplay,
+OverloadRecombine, StatelessAccident, CommutativityViolator,
+BoundaryCheater) ; and statistical accidents evaluated at *N*=100
+trials each (RandomCoinFlip, ShapeDistributionDependent,
+SeedDependentSubstrate). Each substrate implements the
+`SubstrateAdapter` Protocol but is designed to violate at least one
+axiom or invariant in spirit.
+
+Applying the structural-invariant layer of the criterion alone
+(S2 finiteness ; range bounds on `replay_rate` and `recombine_rate`
+mirroring S4 ; nonnegativity of `restructure_sum` and
+`wall_time_s` ; bounded `delta_acc`) we observed non-zero pass
+rates on **all 15 substrates** (Cat A and Cat B at 1/1 trial each ;
+Cat C at 6/100, 80/100, and 1/100 respectively). Per the
+pre-registered decision rule (≥3 false positives ⇒ reformulate),
+this result establishes that **the structural layer is necessary
+but not sufficient** : the Conformance Criterion must additionally
+require **C2 substrate-specific axiom property tests**, as
+exemplified for the E-SNN substrate in §5.6. The reference
+implementations of §5.6 satisfy both layers ; an arbitrary
+substrate satisfying only the structural layer is not, on its own
+strength, conformant.
+
+This finding strengthens rather than weakens the criterion : it
+makes explicit a requirement that was implicit in the §5.6
+walkthroughs. Reproduction artefacts are at
+`tests/conformance/adversarial/test_negative_substrates.py` and
+`scripts/run_q2_conformance_audit.py` ; raw audit output at
+`docs/milestones/q2-conformance-negative-results.json`.
 
 ---
 
