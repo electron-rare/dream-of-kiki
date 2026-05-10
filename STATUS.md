@@ -41,10 +41,12 @@ preparation** (G10 cycle-3 Gate D folded into Paper 2 backlog).
 ```
 708 tests collected (audited 2026-05-10)
 693 passing, 12 xfailed (DR-2 falsified perms, expected)
-3 failing  (experiments/g4_split_fmnist/data missing — H3 fix in N2 plan)
-coverage 91.31% line / pyproject gate set to 40 (measured before H3
-regressions stabilise; effective coverage with the 3 FMNIST failures
-present is ~88.66% — gate has 49pp headroom)
+0 failing (the 3 prior FMNIST data-missing failures now skip
+gracefully via H3 fix shipped 2026-05-10 ; 3 skipped reported
+when experiments/g4_split_fmnist/data is absent on a fresh clone)
+coverage 91.31% line / pyproject gate set to 40 (gate has 51pp
+headroom ; coverage stable post-H3 since skipped tests don't
+contribute lines either way)
 ```
 
 R1 output-hash API landed (`register_output_hash` /

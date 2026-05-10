@@ -3,10 +3,31 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from experiments.g4_quater_test.run_step3_recombine_strategies import (
     ARMS,
     STRATEGIES,
     run_pilot,
+)
+
+# H3 fix (N2 plan, 2026-05-10): the FMNIST data directory is gitignored
+# (raw IDX files; not committed). Convert "data missing" from a hard
+# failure into a clean skip so a fresh clone reports green by default
+# and surfaces this as a "data prerequisite" rather than a code bug.
+_FMNIST_DATA = (
+    Path(__file__).resolve().parents[3]
+    / "experiments"
+    / "g4_split_fmnist"
+    / "data"
+)
+_SKIP_IF_NO_FMNIST = pytest.mark.skipif(
+    not _FMNIST_DATA.exists(),
+    reason=(
+        f"FMNIST raw data not present at {_FMNIST_DATA}; "
+        "fetch via experiments/g4_split_fmnist/fetch_data.sh "
+        "(or equivalent in that experiment dir) before running this pilot."
+    ),
 )
 
 
@@ -15,13 +36,9 @@ def test_constants_match_prereg() -> None:
     assert STRATEGIES == ("mog", "ae", "none")
 
 
+@_SKIP_IF_NO_FMNIST
 def test_run_pilot_smoke(tmp_path: Path) -> None:
-    data_dir = (
-        Path(__file__).resolve().parents[3]
-        / "experiments"
-        / "g4_split_fmnist"
-        / "data"
-    )
+    data_dir = _FMNIST_DATA
     out_json = tmp_path / "step3.json"
     out_md = tmp_path / "step3.md"
     registry_db = tmp_path / "registry.sqlite"
