@@ -238,7 +238,7 @@ class MicroKikiHandlersMixin:
 
         Reference : Yadav et al., arXiv 2306.01708 §3.
         """
-        from kiki_oniric.substrates.micro_kiki._legacy import _ties_merge
+        from kiki_oniric.substrates.micro_kiki.ties import _ties_merge
 
         def handler(
             payload: dict[str, Any], op: str = "ties",
