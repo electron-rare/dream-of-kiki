@@ -38,6 +38,22 @@ from kiki_oniric.substrates._adversarial.cat_c_statistical import (
     SeedDependentSubstrate,
     ShapeDistributionDependent,
 )
+from kiki_oniric.substrates._adversarial.cat_d_modular import (
+    AffineModN,
+    BinaryGray,
+    Mod7Cycler,
+    Mod13Hasher,
+)
+from kiki_oniric.substrates._adversarial.cat_e_replay_loops import (
+    AlphaInfiniteRecycle,
+    BetaPermutationLeak,
+    GammaSnapshotRollback,
+    ReplayHistorySpoof,
+)
+from kiki_oniric.substrates._adversarial.cat_f_asymmetric import (
+    AsymRecombineEmpty,
+    AsymReplayHeavy,
+)
 from kiki_oniric.substrates.factory import CellRequest
 
 
@@ -151,15 +167,22 @@ CAT_B = [ShapePreservingNoise, BudgetGamingSubstrate, PermutedReplay,
          OverloadRecombine, StatelessAccident, CommutativityViolator,
          BoundaryCheater]
 CAT_C = [RandomCoinFlip, ShapeDistributionDependent, SeedDependentSubstrate]
+CAT_D = [Mod7Cycler, Mod13Hasher, BinaryGray, AffineModN]
+CAT_E = [ReplayHistorySpoof, BetaPermutationLeak,
+         AlphaInfiniteRecycle, GammaSnapshotRollback]
+CAT_F = [AsymReplayHeavy, AsymRecombineEmpty]
 
 
 def main() -> int:
-    out_path = Path("docs/milestones/q2-conformance-negative-results.json")
+    out_path = Path("docs/milestones/q2plus-conformance-negative-results.json")
     audits: list[SubstrateAudit] = []
     for cat_name, cat_classes, n_trials, seed_iter in [
         ("A_trivial", CAT_A, 1, lambda t: 0),
         ("B_adversarial", CAT_B, 1, lambda t: 0),
         ("C_statistical", CAT_C, 100, lambda t: t),
+        ("D_modular", CAT_D, 1, lambda t: 0),
+        ("E_replay_loops", CAT_E, 1, lambda t: 0),
+        ("F_asymmetric", CAT_F, 1, lambda t: 0),
     ]:
         for cls in cat_classes:
             audit = run_substrate(cls, n_trials, seed_iter)
@@ -170,21 +193,49 @@ def main() -> int:
 
     fp_substrates = [a for a in audits if a.pass_count > 0]
     n_fp = len(fp_substrates)
+    n_total = len(audits)
     print()
     print(f"Substrates with non-zero pass rate (= FP candidates): "
-          f"{n_fp} / {len(audits)}")
+          f"{n_fp} / {n_total}")
     if n_fp == 0:
         verdict = "0_FP_robust"
     elif n_fp <= 2:
         verdict = "1_to_2_FP_strengthen"
     else:
         verdict = "ge_3_FP_reformulate"
-    print(f"Verdict per pre-registration: {verdict}")
+    print(f"Verdict per N8 pre-registration: {verdict}")
+
+    # Q2+ pre-reg brackets (25-substrate pool)
+    if n_fp == n_total:
+        q2plus_verdict = f"q2plus_{n_fp}_{n_total}_FP_C2_required"
+    elif n_total - n_fp <= 3:
+        q2plus_verdict = f"q2plus_{n_fp}_{n_total}_FP_some_discrimination"
+    else:
+        q2plus_verdict = f"q2plus_{n_fp}_{n_total}_FP_strong_discrimination"
+    print(f"Verdict per Q2+ pre-registration: {q2plus_verdict}")
+
+    # Per-category FP counts
+    by_cat: dict[str, list[SubstrateAudit]] = {}
+    for a in audits:
+        by_cat.setdefault(a.category, []).append(a)
+    cat_fp_counts = {
+        c: {
+            "fp": sum(1 for a in lst if a.pass_count > 0),
+            "total": len(lst),
+        }
+        for c, lst in by_cat.items()
+    }
+    print("Per-category FP counts:")
+    for c, d in cat_fp_counts.items():
+        print(f"  {c}: {d['fp']}/{d['total']}")
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps({
         "verdict": verdict,
+        "q2plus_verdict": q2plus_verdict,
         "n_fp_substrates": n_fp,
+        "n_total": n_total,
+        "per_category": cat_fp_counts,
         "audits": [asdict(a) for a in audits],
     }, indent=2))
     print(f"Wrote {out_path}")
