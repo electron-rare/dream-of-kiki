@@ -563,6 +563,21 @@ walkthroughs. Reproduction artefacts are at
 `scripts/run_q2_conformance_audit.py` ; raw audit output at
 `docs/milestones/q2-conformance-negative-results.json`.
 
+**Q2+ extension (2026-05-11).** We extended the negative-test pool
+with 10 additional substrates spanning three new categories: Cat D
+modular-arithmetic obfuscation (Mod7Cycler, Mod13Hasher, BinaryGray,
+AffineModN), Cat E replay-loop violators (ReplayHistorySpoof,
+BetaPermutationLeak, AlphaInfiniteRecycle, GammaSnapshotRollback),
+and Cat F asymmetric-channel (AsymReplayHeavy, AsymRecombineEmpty).
+All 10 also passed the structural-invariant layer, bringing the
+cumulative pool to **25/25 substrates** across **6 categories**
+that satisfy S2/range/nonneg/bounded-delta_acc but encode no
+axiom-relevant computation. The "C2 required" finding from §5.8 is
+correspondingly strengthened : at no point in the 6-category sweep
+did the structural layer surface a discrimination signal. Reproduction
+artefact at `docs/milestones/q2plus-conformance-negative-results.json` ;
+extended audit harness at `scripts/run_q2_conformance_audit.py`.
+
 ---
 
 ## 6. Methodology

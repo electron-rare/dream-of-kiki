@@ -144,6 +144,25 @@ truth supervision uses the OSF pre-registered protocol from cycle 1
   + ablation_results.json + q1_verdict.json). Cross-reference
   milestone : `nerve-wml docs/milestones/q1-multiplexer-benchmark-2026-05-10.md`.
 
+  **Cross-condition robustness (Q1+/Q1++ extensions, 2026-05-11).**
+  We tested the tied verdict's robustness along two axes : (i) class
+  scaling — re-running the same 4-architecture × 5-seed sweep on
+  HardFlowProxyTask N=16 (vs the N=2 of §7.9 base) ; (ii) task-difficulty
+  generalization — re-running on the canonical FlowProxyTask 4-class
+  (linearly-separable, easier regime). Both extensions yield **the same
+  "tied" verdict** (Q1+ at N=16 : 3W/5L/1T identical to N=2 ; Q1++
+  at FlowProxyTask : 3W/4L/2T). The convergent-evidence framing
+  generalizes : GTM consistently dominates `mi_h` (information per code
+  unit) against MLP and RecursiveLink across all three conditions, and
+  consistently loses `bw_eff` (effective code rank) due to PSK cluster
+  collapse in the discrete bottleneck — a mechanical signature of the
+  quantization, not a task-specific artefact. The N-invariance corollary
+  (PAC advantage is task-property-driven, not scale-driven) is therefore
+  empirically supported. Reproduction artefacts at
+  `nerve-wml/experiments/benchmark_multiplexer_vs_baselines/results_n16.json`
+  and `results_q1plusplus.json` ; figures
+  `multiplexer_benchmark_n16.png`, `multiplexer_benchmark_q1plusplus.png`.
+
 ## 8. Discussion (~1 page)
 
 - 8.1 Reproducibility validated across four substrates and three

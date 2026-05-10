@@ -199,6 +199,8 @@ En appliquant la couche d'invariants structurels du critere seule (finitude S2 ;
 
 Ce resultat renforce le critere plutot qu'il ne l'affaiblit : il rend explicite une exigence implicite. Artefacts de reproduction : `tests/conformance/adversarial/test_negative_substrates.py` et `scripts/run_q2_conformance_audit.py` ; sortie brute de l'audit : `docs/milestones/q2-conformance-negative-results.json`.
 
+**Extension Q2+ (2026-05-11).** Nous avons etendu le pool de tests negatifs avec 10 substrats supplementaires couvrant trois nouvelles categories : Cat D obfuscation modulo-arithmetique (Mod7Cycler, Mod13Hasher, BinaryGray, AffineModN), Cat E violateurs de boucle de replay (ReplayHistorySpoof, BetaPermutationLeak, AlphaInfiniteRecycle, GammaSnapshotRollback), et Cat F canal asymetrique (AsymReplayHeavy, AsymRecombineEmpty). Les 10 ont egalement passe la couche d'invariants structuraux, portant le pool cumulatif a **25/25 substrats** a travers **6 categories** qui satisfont S2/range/nonneg/bounded-delta_acc sans encoder aucun calcul axiom-pertinent. Le verdict "C2 requis" du §5.7 est en consequence renforce : aucun signal de discrimination n'a emerge de la couche structurale au cours du balayage a 6 categories. Artefact de reproduction : `docs/milestones/q2plus-conformance-negative-results.json` ; harness d'audit etendu : `scripts/run_q2_conformance_audit.py`.
+
 ---
 
 ## 6. Methodologie
