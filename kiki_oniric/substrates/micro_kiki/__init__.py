@@ -13,6 +13,8 @@ existing call sites
 - Task 7 (2026-05-10) — :mod:`.loaders` (safetensors + env-var
   gating) and :mod:`.substrate` (the substrate class itself,
   renamed from ``_legacy.py``).
+- N6 Task 4 (2026-05-10) — :mod:`.spike_loader` (SpikingKiki
+  ingestion + rate-coded spike payload synthesis as a mixin).
 """
 from __future__ import annotations
 
@@ -50,6 +52,11 @@ from kiki_oniric.substrates.micro_kiki.handlers import (  # noqa: F401
     MicroKikiHandlersMixin,
 )
 
+# Spike loader mixin (N6 Task 4 — :mod:`.spike_loader`).
+from kiki_oniric.substrates.micro_kiki.spike_loader import (  # noqa: F401
+    SpikeLoaderMixin,
+)
+
 __all__ = [
     "MICRO_KIKI_SUBSTRATE_NAME",
     "MICRO_KIKI_SUBSTRATE_VERSION",
@@ -57,6 +64,7 @@ __all__ = [
     "MicroKikiRecombineState",
     "MicroKikiRestructureState",
     "MicroKikiSubstrate",
+    "SpikeLoaderMixin",
     "_REAL_BACKEND_ENV_VAR",
     "_REAL_BACKEND_PATH_ENV_VAR",
     "_oplora_projector",
