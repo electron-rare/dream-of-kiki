@@ -121,6 +121,28 @@ truth supervision uses the OSF pre-registered protocol from cycle 1
 - 7.7 Cross-modal Studyforrest result (C3.18 G10c report).
 - 7.8 **Gate D verdict** on H1–H4 (the deferred multi-scale
   decision the cycle-3 plan promised).
+- 7.9 **Q1 GammaThetaMultiplexer benchmark** (HardFlowProxyTask
+  N=2, 5 seeds {0,17,42,73,101}, Welch's t-test pairwise GTM vs
+  3 baselines × 3 metrics = 9 comparisons, Bonferroni
+  α=0.05/9≈0.0056). **Verdict : `tied`** per pre-registration —
+  GTM wins 3/9 (mi_h vs RecursiveLink and MLP, round-trip vs
+  CrossAttn), loses 5/9 (rtf and bw_eff vs the two latent-space
+  baselines, bw_eff vs CrossAttn), 1 tie (mi_h vs CrossAttn).
+  Reframed narrative : **convergent evidence** — GTM matches
+  latent-space baselines on aggregate while preserving phase-coupled
+  biological plausibility, with stronger mutual-information per
+  code unit (mi_h ≈1.20 vs ≈0.40 for MLP/RecursiveLink). Per the
+  Q2 soft-gate (`ge_3_FP_reformulate`, dream-of-kiki commit
+  `6ff8320`), Paper 2 widens to **Conformance Criterion C+**
+  (extended : structural invariants + C2 substrate-specific
+  axiom property tests). Partial T14 ablation (γ-only and θ-only
+  subbands) lands within SEM of the full GTM, suggesting γ⊗θ
+  multiplexing structure is not load-bearing on this task ;
+  no_plasticity ablation pending (T16 refresh). Figure :
+  `nerve-wml v1.X.X papers/paper2/figures/multiplexer_benchmark.png`.
+  Artefacts : `nerve-wml commit a6ddcba` (analyse.py + results.json
+  + ablation_results.json + q1_verdict.json). Cross-reference
+  milestone : `nerve-wml docs/milestones/q1-multiplexer-benchmark-2026-05-10.md`.
 
 ## 8. Discussion (~1 page)
 
