@@ -149,8 +149,24 @@ cycle 1 (amendement 2026-04-23 couvrant l'extension multi-échelle).
   spécifiques au substrat C2). L'ablation T14 partielle (sous-
   bandes γ-seul et θ-seul) reste dans la SEM du GTM complet,
   suggérant que la structure de multiplexage γ⊗θ n'est pas
-  porteuse sur cette tâche ; ablation no_plasticity en attente
-  (rafraîchissement T16). Figure :
+  porteuse sur cette tâche. L'effet du schedule de plasticité sur
+  les résultats est sous le seuil de bruit pour cette tâche et ce
+  nombre de paramètres : la constellation représente 128 sur
+  17 888 paramètres entraînables (0,7 %), donc moduler son gradient
+  par un schedule cosinus ne produit pas de différence
+  comportementale mesurable (Δ < 0,005 RTF, inférieur à l'écart-type
+  par graine ; Δ observé GTM vs NoPlasticity = 0,0033 RTF ≈ 0,05
+  seed-σ). C'est un **résultat négatif** cohérent avec le cadrage
+  évidence-convergente : sur HardFlowProxyTask, l'ordonnancement
+  de la plasticité **n'est pas porteur** — la structure de canal
+  discret (alphabet PSK + quantification Gumbel) pilote l'avantage
+  `mi_h`, pas la modulation temporelle de l'apprentissage de la
+  constellation. Une fraction plus large du modèle devrait
+  participer au schedule pour que l'ablation discrimine ; nous
+  laissons cela comme observation méthodologique pour travaux
+  futurs (e.g. embeddings appris par symbole, ou ablation
+  `constellation_lock_after` avec constellation gelée en milieu
+  d'entraînement). Figure :
   `nerve-wml v1.X.X papers/paper2/figures/multiplexer_benchmark.png`.
   Artefacts : `nerve-wml commit a6ddcba` (analyse.py + results.json
   + ablation_results.json + q1_verdict.json). Référence croisée

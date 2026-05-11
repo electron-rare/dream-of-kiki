@@ -137,8 +137,23 @@ truth supervision uses the OSF pre-registered protocol from cycle 1
   (extended : structural invariants + C2 substrate-specific
   axiom property tests). Partial T14 ablation (γ-only and θ-only
   subbands) lands within SEM of the full GTM, suggesting γ⊗θ
-  multiplexing structure is not load-bearing on this task ;
-  no_plasticity ablation pending (T16 refresh). Figure :
+  multiplexing structure is not load-bearing on this task. The
+  plasticity schedule's effect on outcomes is below the noise floor
+  for this task and parameter count : the constellation is 128 of
+  17,888 trainable parameters (0.7 %), so scaling its gradient by
+  a cosine schedule does not produce a measurable behavioural
+  difference (Δ < 0.005 RTF, less than seed standard deviation ;
+  observed GTM vs NoPlasticity Δ = 0.0033 RTF ≈ 0.05 seed-σ). This
+  is a **negative result** consistent with the convergent-evidence
+  framing : on HardFlowProxyTask, plasticity scheduling is **not
+  load-bearing** — the discrete-channel structure (PSK alphabet +
+  Gumbel quantization) drives the `mi_h` advantage, not the
+  temporal modulation of constellation learning. A larger fraction
+  of the model would need to participate in the schedule for the
+  ablation to discriminate ; we leave this as a methodological
+  observation for future work (e.g. per-symbol learned embeddings,
+  or `constellation_lock_after` ablation with the constellation
+  frozen mid-training). Figure :
   `nerve-wml v1.X.X papers/paper2/figures/multiplexer_benchmark.png`.
   Artefacts : `nerve-wml commit a6ddcba` (analyse.py + results.json
   + ablation_results.json + q1_verdict.json). Cross-reference
