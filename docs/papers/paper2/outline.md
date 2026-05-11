@@ -151,17 +151,31 @@ truth supervision uses the OSF pre-registered protocol from cycle 1
   generalization — re-running on the canonical FlowProxyTask 4-class
   (linearly-separable, easier regime). Both extensions yield **the same
   "tied" verdict** (Q1+ at N=16 : 3W/5L/1T identical to N=2 ; Q1++
-  at FlowProxyTask : 3W/4L/2T). The convergent-evidence framing
-  generalizes : GTM consistently dominates `mi_h` (information per code
-  unit) against MLP and RecursiveLink across all three conditions, and
-  consistently loses `bw_eff` (effective code rank) due to PSK cluster
-  collapse in the discrete bottleneck — a mechanical signature of the
-  quantization, not a task-specific artefact. The N-invariance corollary
-  (PAC advantage is task-property-driven, not scale-driven) is therefore
-  empirically supported. Reproduction artefacts at
+  at FlowProxyTask : **3W/1L/2T over 6 effective comparisons** —
+  3 `bw_eff` comparisons are excluded as statistically degenerate
+  because all four architectures collapse to constant per-seed
+  bandwidth-efficiency on the easier regime, leaving Welch's t-test
+  undefined ; descriptive means GTM=0.125 vs baselines=0.1875 are
+  reported but not significance-tested). The convergent-evidence
+  framing generalizes : GTM consistently dominates `mi_h` (information
+  per code unit) against MLP and RecursiveLink across all three
+  conditions, and consistently underperforms on `bw_eff` (effective
+  code rank) due to PSK cluster collapse in the discrete bottleneck —
+  a mechanical signature of the quantization, not a task-specific
+  artefact (in Q1++ this signature is constant-valued and therefore
+  not testable, hence the degenerate-metric exclusion). The
+  N-invariance corollary (PAC advantage is task-property-driven, not
+  scale-driven) is therefore empirically supported. The Bonferroni
+  denominator is set to the **effective** number of comparisons after
+  degenerate exclusion (Q1/Q1+ : α=0.05/9≈0.0056 ; Q1++ : α=0.05/6≈0.0083).
+  Cohen's d effect sizes are reported per non-degenerate test in the
+  verdict JSONs. Reproduction artefacts at
   `nerve-wml/experiments/benchmark_multiplexer_vs_baselines/results_n16.json`
   and `results_q1plusplus.json` ; figures
-  `multiplexer_benchmark_n16.png`, `multiplexer_benchmark_q1plusplus.png`.
+  `multiplexer_benchmark_n16.png`, `multiplexer_benchmark_q1plusplus.png` ;
+  per-condition verdicts `q1_verdict_n16.json`,
+  `q1_verdict_q1plusplus.json` (carrying `degenerate_metrics`,
+  `n_effective`, and per-test `cohens_d`).
 
 ## 8. Discussion (~1 page)
 

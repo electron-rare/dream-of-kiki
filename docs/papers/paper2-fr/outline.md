@@ -156,6 +156,43 @@ cycle 1 (amendement 2026-04-23 couvrant l'extension multi-échelle).
   + ablation_results.json + q1_verdict.json). Référence croisée
   milestone : `nerve-wml docs/milestones/q1-multiplexer-benchmark-2026-05-10.md`.
 
+  **Robustesse cross-condition (extensions Q1+/Q1++, 2026-05-11).**
+  Nous avons testé la robustesse du verdict `tied` selon deux axes :
+  (i) mise à l'échelle des classes — ré-exécution du même balayage
+  4 architectures × 5 graines sur HardFlowProxyTask N=16 (vs N=2 du
+  §7.9 base) ; (ii) généralisation à la difficulté de tâche —
+  ré-exécution sur la FlowProxyTask canonique 4-classes (régime
+  linéairement séparable, plus facile). Les deux extensions donnent
+  **le même verdict `tied`** (Q1+ à N=16 : 3W/5L/1T identique à N=2 ;
+  Q1++ à FlowProxyTask : **3W/1L/2T sur 6 comparaisons effectives** —
+  3 comparaisons `bw_eff` sont exclues comme statistiquement
+  dégénérées car les quatre architectures s'effondrent à une
+  bandwidth-efficiency constante par-graine sur le régime plus
+  facile, laissant le t-test de Welch indéfini ; les moyennes
+  descriptives GTM=0,125 vs baselines=0,1875 sont rapportées mais
+  pas testées en significativité). Le cadrage évidence-convergente
+  généralise : GTM domine systématiquement `mi_h` (information par
+  unité de code) contre MLP et RecursiveLink dans les trois
+  conditions, et sous-performe systématiquement sur `bw_eff` (rang
+  effectif du code) à cause de l'effondrement des clusters PSK
+  dans le bottleneck discret — une signature mécanique de la
+  quantization, pas un artefact spécifique à la tâche (en Q1++
+  cette signature est à valeur constante donc non testable, d'où
+  l'exclusion des métriques dégénérées). Le corollaire de
+  N-invariance (l'avantage PAC est piloté par la propriété de la
+  tâche, pas par l'échelle) est donc empiriquement supporté. Le
+  dénominateur Bonferroni est fixé au nombre **effectif** de
+  comparaisons après exclusion dégénérée (Q1/Q1+ : α=0,05/9≈0,0056 ;
+  Q1++ : α=0,05/6≈0,0083). Les tailles d'effet de Cohen d sont
+  rapportées par test non dégénéré dans les JSONs de verdict.
+  Artefacts de reproduction :
+  `nerve-wml/experiments/benchmark_multiplexer_vs_baselines/results_n16.json`
+  et `results_q1plusplus.json` ; figures
+  `multiplexer_benchmark_n16.png`, `multiplexer_benchmark_q1plusplus.png` ;
+  verdicts par condition `q1_verdict_n16.json`,
+  `q1_verdict_q1plusplus.json` (portant `degenerate_metrics`,
+  `n_effective`, et `cohens_d` par test).
+
 ## 8. Discussion (~1 page)
 
 - 8.1 Reproductibilité validée à travers quatre substrats et
