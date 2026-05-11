@@ -80,3 +80,28 @@ Substrates with non-zero pass rate: **25 / 25**.
 ### Cumulative validation
 
 The Conformance Criterion's "C+" extension (structural + C2) now rests on a 25-substrate negative-test base spanning 6 categories — substantially more defensible than the 15-substrate N8 baseline. No discrimination signal emerged at the structural layer alone in any new category.
+
+## Critic clarification (2026-05-11)
+
+The original "25/25 substrates pass structural layer" framing in this
+milestone + paper §5.8 was binary-overstated per critic review. Honest
+per-substrate breakdown :
+
+- **Deterministic 1/1 pass (22 substrates)** : 5 Cat A + 7 Cat B + 4
+  Cat D + 4 Cat E + 2 Cat F. These pass the structural layer with
+  certainty because they were constructed to satisfy
+  S2/range/nonneg/bounded-delta_acc by design.
+- **Statistical FP heterogeneity (3 Cat C substrates)** :
+  ShapeDistributionDependent 80/100 (genuine blindspot — long-tail
+  inputs slip through), RandomCoinFlip 6/100 (matches ~3.1% theoretical
+  expectation), SeedDependentSubstrate 1/100 (only on seed=0 as
+  constructed).
+
+Conclusion unchanged (`q2plus_25_25_FP_C2_required` if "FP" is defined
+as "any trial passes") but the headline number now communicates
+honest texture : structural layer is necessary, **proven insufficient
+against 22 deterministic adversaries + 1 statistical category-X
+adversary (ShapeDistributionDependent)**, partially safe against
+NaN/Inf/range-violation statistical adversaries (94-99% rejection).
+
+Paper 1 §5.8 EN + §5.7 FR rewritten accordingly.

@@ -544,17 +544,29 @@ axiom or invariant in spirit.
 Applying the structural-invariant layer of the criterion alone
 (S2 finiteness ; range bounds on `replay_rate` and `recombine_rate`
 mirroring S4 ; nonnegativity of `restructure_sum` and
-`wall_time_s` ; bounded `delta_acc`) we observed non-zero pass
-rates on **all 15 substrates** (Cat A and Cat B at 1/1 trial each ;
-Cat C at 6/100, 80/100, and 1/100 respectively). Per the
-pre-registered decision rule (≥3 false positives ⇒ reformulate),
-this result establishes that **the structural layer is necessary
-but not sufficient** : the Conformance Criterion must additionally
-require **C2 substrate-specific axiom property tests**, as
-exemplified for the E-SNN substrate in §5.6. The reference
-implementations of §5.6 satisfy both layers ; an arbitrary
-substrate satisfying only the structural layer is not, on its own
-strength, conformant.
+`wall_time_s` ; bounded `delta_acc`) the structural-invariant layer
+is **insufficient as a stand-alone criterion** : 12/15 N8
+substrates (Cat A trivial + Cat B adversarial) pass deterministically
+with the single-trial protocol, while the 3 Cat C statistical
+substrates display heterogeneous FP rates. Specifically,
+ShapeDistributionDependent passes 80/100 trials (the structural
+layer fails to discriminate it on 80% of input distributions),
+RandomCoinFlip passes 6/100 trials (3.1% theoretical, 6% observed
+— within seed noise), and SeedDependentSubstrate passes 1/100
+(only on seed=0, as constructed). The first finding (80% FP on
+ShapeDistributionDependent) confirms the criterion has a category-X
+blindspot — passing on common-distribution inputs while flunking
+on long-tail. The latter two findings (1-6% FP) show the structural
+layer *does* have discriminative power against statistical
+adversaries that inject NaN/Inf or out-of-range values, just not
+100% safety. Per the pre-registered decision rule (≥3 false
+positives ⇒ reformulate), this result establishes that **the
+structural layer is necessary but not sufficient** : the Conformance
+Criterion must additionally require **C2 substrate-specific axiom
+property tests**, as exemplified for the E-SNN substrate in §5.6.
+The reference implementations of §5.6 satisfy both layers ; an
+arbitrary substrate satisfying only the structural layer is not,
+on its own strength, conformant.
 
 This finding strengthens rather than weakens the criterion : it
 makes explicit a requirement that was implicit in the §5.6
@@ -569,13 +581,18 @@ modular-arithmetic obfuscation (Mod7Cycler, Mod13Hasher, BinaryGray,
 AffineModN), Cat E replay-loop violators (ReplayHistorySpoof,
 BetaPermutationLeak, AlphaInfiniteRecycle, GammaSnapshotRollback),
 and Cat F asymmetric-channel (AsymReplayHeavy, AsymRecombineEmpty).
-All 10 also passed the structural-invariant layer, bringing the
-cumulative pool to **25/25 substrates** across **6 categories**
-that satisfy S2/range/nonneg/bounded-delta_acc but encode no
-axiom-relevant computation. The "C2 required" finding from §5.8 is
-correspondingly strengthened : at no point in the 6-category sweep
-did the structural layer surface a discrimination signal. Reproduction
-artefact at `docs/milestones/q2plus-conformance-negative-results.json` ;
+All 10 pass the structural-invariant layer **deterministically (1/1
+trials each)** because they were constructed to satisfy
+S2/range/nonneg/bounded-delta_acc by design. Combined with the N8
+base, the cumulative pool spans 22 substrates that the structural
+layer cannot reject (12 N8 trivial+adversarial + 10 N9
+modular+replay+asymmetric) and 3 statistical substrates with
+heterogeneous FP rates (1-80%). The "C2 required" conclusion is
+correspondingly strengthened : the structural layer is necessary
+but provably not sufficient for *any* substrate that obeys the
+basic invariants, and only partially discriminating against
+statistical adversaries. Reproduction artefact at
+`docs/milestones/q2plus-conformance-negative-results.json` ;
 extended audit harness at `scripts/run_q2_conformance_audit.py`.
 
 ---
