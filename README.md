@@ -25,6 +25,31 @@ Research program producing two complementary papers, both released as arXiv prep
 
 ---
 
+## 2026-05-11 milestones — Paper 1 §5.8 honest framing + Q2+ audit
+
+Paper 1 advanced to **v0.2 with §5.8 honest per-substrate FP framing**
+(Cat C heterogeneity 1 % / 6 % / 80 %, no overstatement). The
+Conformance Criterion was strengthened to **C+** and now requires
+**both** structural invariants and **C2 substrate-specific axiom
+property tests** — validated against 25 substrates from 6 categories
+through the sister-repo `nerve-wml` N8 Q2 + N9 Q2+ negative-tests
+audit (cumulative 25 / 25 FP; structural layer alone is insufficient).
+
+| Item | State |
+|---|---|
+| Paper 1 §5.8 reformulation | shipped (per-substrate FP, no Cat C overstatement) |
+| Conformance Criterion | upgraded **C → C+** (C1 + C2 + C3) |
+| C2 axiom property tests | mandated for any substrate compliance claim |
+| Negative-tests audit | 25 / 25 substrates rejected (Cat A–F), upstream `nerve-wml` |
+| Critic-driven fixes | 6 / 6 closed (CRITICAL #1 ablation void, CRITICAL #2 degenerate metrics, MAJOR #3 Cat C overstatement, MAJOR #4 Jonckheere wrong test, MAJOR #5 β-VAE confound, MAJOR #6 paper/JSON count mismatch) |
+
+Cumulative on main HEAD `15efb95` : **479 commits**, internal
+DualVer `C-v0.10.0`, 277+ tests / 91 % coverage. Paper 1 v0.2 still
+points at PLOS Computational Biology as primary venue, arXiv deposit
+ready.
+
+---
+
 ## What this repo is
 
 - **Research code**, not a product. Correctness > performance.
